@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { loadRemoteModule } from '@angular-architects/native-federation';
 
 @Component({
   selector: 'app-mfe-container',
@@ -13,19 +12,19 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-banking-navy"></div>
         </div>
       }
-      
+
       @if (error()) {
         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
           <p class="text-red-800">Error al cargar el módulo: {{ error() }}</p>
         </div>
       }
-      
+
       <div #mfeContainer></div>
     </div>
   `
 })
 export class MfeContainerComponent implements OnInit {
-  @ViewChild('mfeContainer', { read: ViewContainerRef }) 
+  @ViewChild('mfeContainer', { read: ViewContainerRef })
   container!: ViewContainerRef;
 
   readonly loading = signal(true);
@@ -33,13 +32,14 @@ export class MfeContainerComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      const module = await loadRemoteModule({
-        remoteName: 'mfe-transfers',
-        exposedModule: './Component'
-      });
-
-      const componentRef = this.container.createComponent(module.TransferComponent);
-      this.loading.set(false);
+      // Manual approach: Load MFE component from global function
+      if (typeof window !== 'undefined' && (window as any).getMfeTransfersComponent) {
+        const TransferComponent = await (window as any).getMfeTransfersComponent();
+        const componentRef = this.container.createComponent(TransferComponent);
+        this.loading.set(false);
+      } else {
+        throw new Error('MFE not available');
+      }
     } catch (err) {
       console.error('Error loading MFE:', err);
       this.error.set(err instanceof Error ? err.message : 'Unknown error');

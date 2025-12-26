@@ -11,13 +11,15 @@ export interface TransferSuccessPayload {
 })
 export class EventBusService {
   emitTransferSuccess(payload: TransferSuccessPayload): void {
-    const event = new CustomEvent('transfer-success', {
-      detail: payload,
-      bubbles: true,
-      composed: true
-    });
-    
-    window.dispatchEvent(event);
-    console.log('Transfer success event emitted:', payload);
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('transfer-success', {
+        detail: payload,
+        bubbles: true,
+        composed: true
+      });
+
+      window.dispatchEvent(event);
+      console.log('Transfer success event emitted:', payload);
+    }
   }
 }

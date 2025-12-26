@@ -30,7 +30,7 @@ export class BalanceService {
   constructor() {
     // Listen for transfer success events
     this.setupEventListener();
-    
+
     // Optional: Log balance changes
     effect(() => {
       console.log('Balance updated:', this.formattedBalance());
@@ -38,10 +38,12 @@ export class BalanceService {
   }
 
   private setupEventListener(): void {
-    window.addEventListener('transfer-success', ((event: TransferSuccessEvent) => {
-      const { amount } = event.detail;
-      this.deductBalance(amount);
-    }) as EventListener);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('transfer-success', ((event: TransferSuccessEvent) => {
+        const { amount } = event.detail;
+        this.deductBalance(amount);
+      }) as EventListener);
+    }
   }
 
   deductBalance(amount: number): void {

@@ -1,0 +1,5 @@
+{
+  "name": "mfe-transfers",
+  "url": "http://localhost:4201",
+  "exposedModule": "./Component"
+}
