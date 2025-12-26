@@ -1,0 +1,6 @@
+{
+  "available": true,
+  "componentUrl": "http://localhost:4201/main.js",
+  "exposedModule": "./Component",
+  "loadFunction": "getMfeTransfersComponent"
+}
